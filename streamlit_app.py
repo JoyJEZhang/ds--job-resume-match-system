@@ -163,8 +163,8 @@ def main():
                         # Display recommendations with safe styling
                         display_dataframe_with_styling(
                             recommendations, 
-                            ['Job_Title', 'Company', 'Match_Score', 'Quality'],
-                            'Match_Score'
+                            ['Job_Title', 'Company', 'Score', 'Quality'],
+                            'Score'
                         )
                         
                         # Allow downloading results
@@ -203,8 +203,8 @@ def main():
                 # Display matches with safe styling
                 display_dataframe_with_styling(
                     matches, 
-                    ['Resume_ID', 'Job_Title', 'Match_Score', 'Quality'],
-                    'Match_Score'
+                    ['Resume_ID', 'Job_Title', 'Score', 'Quality'],
+                    'Score'
                 )
                 
                 # Allow downloading results
@@ -217,7 +217,7 @@ def main():
                 st.subheader("Match Scores by Quality")
                 fig, ax = plt.subplots(figsize=(10, 6))
                 # Use hue parameter correctly to avoid warnings
-                sns.boxplot(data=matches, x='Quality', y='Match_Score', ax=ax, palette='viridis')
+                sns.boxplot(data=matches, x='Quality', y='Score', ax=ax, palette='viridis')
                 st.pyplot(fig)
             else:
                 st.error(f"No matches found for category: {selected_category}")
@@ -246,7 +246,7 @@ def main():
                     random_id = recommender.resume_df['ID'].sample(1).iloc[0]
                     st.session_state.feedback_resume_id = int(random_id)
                     st.session_state.feedback_page_step = 2
-                    st.experimental_rerun()
+                    st.rerun()
             
             with col2:
                 # Simple dropdown of 10 sample IDs
@@ -255,7 +255,7 @@ def main():
                 if st.button("Use selected ID"):
                     st.session_state.feedback_resume_id = int(sample_selection)
                     st.session_state.feedback_page_step = 2
-                    st.experimental_rerun()
+                    st.rerun()
             
             with col3:
                 # Manual ID entry
@@ -265,7 +265,7 @@ def main():
                     if manual_id in recommender.resume_df['ID'].values:
                         st.session_state.feedback_resume_id = int(manual_id)
                         st.session_state.feedback_page_step = 2
-                        st.experimental_rerun()
+                        st.rerun()
                     else:
                         st.error(f"Resume ID {manual_id} not found.")
         
@@ -282,7 +282,7 @@ def main():
             # Button to go back
             if st.button("← Select a different resume"):
                 st.session_state.feedback_page_step = 1
-                st.experimental_rerun()
+                st.rerun()
             
             # Get recommendations
             with st.spinner("Finding matches..."):
@@ -299,7 +299,7 @@ def main():
                         col1, col2 = st.columns([3, 2])
                         with col1:
                             st.markdown(f"**Company:** {rec['Company']}")
-                            st.markdown(f"**Match Score:** {rec['Match_Score']:.3f} (Quality: {rec['Quality']})")
+                            st.markdown(f"**Match Score:** {rec['Score']:.3f} (Quality: {rec['Quality']})")
                         
                         with col2:
                             # Create a unique key for each feedback radio
@@ -359,7 +359,7 @@ def main():
                 # Button to go back
                 if st.button("Select a different resume"):
                     st.session_state.feedback_page_step = 1
-                    st.experimental_rerun()
+                    st.rerun()
     
     # Analyze feedback
     elif page == "Analyze Feedback":
@@ -369,7 +369,7 @@ def main():
             st.warning("No user feedback available for analysis.")
             if st.button("Run Simulation to Generate Sample Feedback"):
                 st.session_state.run_simulation = True
-                st.experimental_rerun()
+                st.rerun()
         else:
             # Analyze and display results
             with st.spinner("Analyzing feedback..."):
@@ -431,7 +431,7 @@ def main():
                         recommender.good_threshold = good_threshold
                         recommender.poor_threshold = poor_threshold
                         st.success("Thresholds updated successfully!")
-                        st.experimental_rerun()
+                        st.rerun()
                 else:
                     st.warning("Need feedback for all categories (good, average, poor) to calculate thresholds")
     
